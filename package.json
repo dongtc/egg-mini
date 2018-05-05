@@ -1,0 +1,26 @@
+{
+  "name": "egg-mini",
+  "version": "1.0.0",
+  "description": "",
+  "private": true,
+  "dependencies": {
+    "egg": "file:egg",
+    "koa": "^2.5.1",
+    "koa-router": "^7.4.0"
+  },
+  "devDependencies": {
+    "egg-bin": "file:egg-bin"
+  },
+  "engines": {
+    "node": ">=8.9.0"
+  },
+  "scripts": {
+    "dev": "egg-bin"
+  },
+  "repository": {
+    "type": "git",
+    "url": ""
+  },
+  "author": "",
+  "license": "MIT"
+}
