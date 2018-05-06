@@ -15,7 +15,7 @@ class Command {
 
     start() {
         const options = this.options;
-        const Egg = require(options.framework);
+        const Egg = require(options.framework).Application;
         http.createServer(new Egg(options).callback()).listen(7001, () => {
             console.log('please open http://127.0.0.1:7001');
         })

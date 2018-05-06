@@ -1,15 +1,6 @@
+const Controller = require('egg').Controller;
 
-class Service{
-    constructor(ctx) {
-       this.ctx = ctx;
-       this.app = ctx.app;
-       this.config = ctx.app.config;
-       this.service = ctx.service; 
-    }
-}
-
-
-class NewsService extends Service{
+class NewsService extends Controller{
     async list() {
         return 'hello world';
     }
