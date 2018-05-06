@@ -20,12 +20,30 @@ class EggLoder {
     }
 
     load() {
+        this.loadExtend('application', this.app);
+        // this.loadExtend('request', this.app.request);
+        // this.loadExtend('response', this.app.response);
+        // this.loadExtend('context', this.app.context);
+        
         this.loadCustomApp();
         this.loadService();
         this.loadMiddleware();
         this.loadController();
         this.loadRouter();
     }
+    loadExtend(name, proto) {
+        // 加载扩展
+        const filePath = this.resolveModule(path.join(this.options.baseDir, `app/extend/${name}`));
+        const ext = this.loadFile(filePath);
+
+        const properties = Object.getOwnPropertyNames(ext);
+
+        for (const property of properties) {
+            let descriptor = Object.getOwnPropertyDescriptor(ext, property);
+
+            Object.defineProperty(proto, property, descriptor);
+        }
+    };
 
     loadCustomApp() {
         // 加载 app.js 
@@ -49,7 +67,6 @@ class EggLoder {
                 return new class ClassLoader {
                     constructor() {
                         for (const property in target) {
-                            //这里如果直接定义会走成死循环。所以得延迟。
                             Object.defineProperty(this, property, {
                                 get() {
                                     return new target[property](ctx);
@@ -69,11 +86,9 @@ class EggLoder {
         const target = app['middlewares'] = {};
         const filePath = path.join(this.options.baseDir, 'app/middleware');
         for (const file of fs.readdirSync(filePath)) {
-            // new.js => new
             const properName = file.replace('.js', '');
             target[properName] = require(path.join(filePath, file));
         }
-        // 我们定义的中间件必须是app通过目录加载过的
         for (const name in target) {
             const options = this.config[name] || {};
             const mw = app.middlewares[name](options, app);
@@ -117,7 +132,7 @@ class EggLoder {
     }
 
     loadFile(filePath, ...inject) {
-        return require(filePath)(...inject);
+        return inject.length === 0 ? require(filePath) : require(filePath)(...inject);
     }
 }
 
